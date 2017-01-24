@@ -1,0 +1,23 @@
+app:
+    resource: "@AppBundle/Controller/DefaultController.php"
+    type:     annotation
+
+places:
+    type: rest
+    resource: "@AppBundle/Controller/PlaceController.php"
+
+users:
+    type: rest
+    resource: "@AppBundle/Controller/UserController.php"
+
+prices:
+    type: rest
+    resource: "@AppBundle/Controller/Place/PriceController.php"
+
+themes:
+    type: rest
+    resource: "@AppBundle/Controller/Place/ThemeController.php"
+
+preferences:
+    type: rest
+    resource: "@AppBundle/Controller/User/PreferenceController.php"
