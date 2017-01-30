@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -15,7 +16,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="users_email_unique",columns={"email"})})
  * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  */
-class User
+class User implements UserInterface
 {
 
     const MATCH_VALUE = 25;
@@ -66,6 +67,21 @@ class User
      * @Groups({"user"})
      */
     protected $preferences;
+
+    /**
+     * @ORM\Column(type="string")
+     * @var
+     */
+    protected $password;
+
+
+    /**
+     * @Assert\NotBlank(groups={"New", "FullUpdate"})
+     * @Assert\Type("string")
+     * @Assert\Length(min="4", max="50")
+     * @var
+     */
+    protected $plainPassword;
 
     public function __construct()
     {
@@ -176,6 +192,65 @@ class User
             }
         }
         return $matchValue > self::MATCH_VALUE;
+    }
+
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPlainPassword()
+    {
+        return $this->plainPassword;
+    }
+
+    /**
+     * @param mixed $plainPassword
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+        return $this;
+
+    }
+
+
+    public function getRoles()
+    {
+        return [];
+    }
+
+
+    public function getSalt()
+    {
+        return null;
+    }
+
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+
+    /**
+     * Removes sensitive data from the user.
+     *
+     * This is important if, at any given point, sensitive information like
+     * the plain-text password is stored on this object.
+     */
+    public function eraseCredentials()
+    {
+        $this->plainPassword = null;
     }
 }
 

@@ -62,10 +62,13 @@ class UserController extends Controller
     public function postUsersAction(Request $request)
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createForm(UserType::class, $user, ['validation_groups' => ['Default', 'New']]);
         $form->submit($request->request->all());
 
         if($form->isValid()){
+            $encoder = $this->get('security.password_encoder');
+            $password = $encoder->encodePassword($user, $user->getPlainPassword());
+            $user->setPassword($password);
             $em = $this->getDoctrine()->getEntityManager();
             $em->persist($user);
             $em->flush();
@@ -126,11 +129,22 @@ class UserController extends Controller
             return $this->userNotFound();
         }
 
-        $form = $this->createForm(UserType::class, $user);
+        $options = []; // Le groupe de validation par défaut de Symfony est Default
+        if($clearMissing)
+            $options = ['validation_groups'=>['Default', 'FullUpdate']];
+
+        $form = $this->createForm(UserType::class, $user, $options);
 
         $form->submit($request->request->all(), $clearMissing);
 
         if ($form->isValid()) {
+
+            if(!empty($user->getPlainPassword())){
+                $encoder = $this->get('security.password_encoder');
+                $password = $encoder->encodePassword($user, $user->getPlainPassword());
+                $user->setPassword($password);
+            }
+
             $em = $this->get('doctrine.orm.entity_manager');
             // l'entité vient de la base, donc le merge n'est pas nécessaire.
             // il est utilisé juste par soucis de clarté
