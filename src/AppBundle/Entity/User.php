@@ -26,7 +26,7 @@ class User implements UserInterface
      * @ORM\Column(name="id", type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
-     * @Groups({"user", "preference"})
+     * @Groups({"user", "preference", "auth-token"})
      */
     private $id;
 
@@ -36,7 +36,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="firstname", type="string", length=255)
-     * @Groups({"user", "preference"})
+     * @Groups({"user", "preference", "auth-token"})
      */
     private $firstname;
 
@@ -46,7 +46,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="lastname", type="string", length=255)
-     * @Groups({"user", "preference"})
+     * @Groups({"user", "preference", "auth-token"})
      */
     private $lastname;
 
@@ -56,7 +56,7 @@ class User implements UserInterface
      * @var string
      *
      * @ORM\Column(name="email", type="string", length=255)
-     * @Groups({"user", "preference"})
+     * @Groups({"user", "preference", "auth-token"})
      */
     private $email;
 
