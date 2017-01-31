@@ -18,6 +18,7 @@ use FOS\RestBundle\Controller\Annotations as Rest; // alias pour toutes les anno
 use AppBundle\Form\Type\CredentialsType;
 use AppBundle\Entity\AuthToken;
 use AppBundle\Entity\Credentials;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class AuthTokenController extends Controller
 {
@@ -57,6 +58,28 @@ class AuthTokenController extends Controller
         $em->flush();
 
         return $authToken;
+    }
+
+    /**
+     * @Rest\View(statusCode=Response::HTTP_NO_CONTENT)
+     * @Rest\Delete("/auth-tokens/{id}")
+     * @param Request $request
+     */
+    public function removeAuthTokenAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getmanager();
+        /** @var AuthToken $authToken */
+        $authToken = $em->getRepository(AuthToken::class)->find($request->get('id'));
+
+        /** @var User $connectedUser */
+        $connectedUser = $this->get('security.token_storage')->getToken()->getUser();
+
+        if($authToken && $authToken->getUser()->getId() === $connectedUser->getId()){
+            $em->remove($authToken);
+            $em->flush();
+        }else{
+            throw new \Symfony\Component\HttpKernel\Exception\BadRequestHttpException();
+        }
     }
 
     private function invalidCredentials()
