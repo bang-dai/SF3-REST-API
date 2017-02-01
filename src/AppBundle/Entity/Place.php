@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use AppBundle\Form\Validator\Constraint as MyAssert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -46,6 +47,8 @@ class Place
     protected $address;
 
     /**
+     * @Assert\Valid()
+     * @MyAssert\PriceTypeUnique()
      * @ORM\OneToMany(targetEntity="Price", mappedBy="place")
      * @var Price[]
      * @Groups({"place"})
