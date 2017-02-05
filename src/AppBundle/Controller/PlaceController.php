@@ -11,6 +11,7 @@ namespace AppBundle\Controller;
 
 use AppBundle\Entity\Place;
 use AppBundle\Form\Type\PlaceType;
+use Doctrine\ORM\QueryBuilder;
 use FOS\RestBundle\Controller\Annotations\Get;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\View\View;
@@ -20,20 +21,42 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use FOS\RestBundle\Controller\Annotations\QueryParam;
+use FOS\RestBundle\Request\ParamFetcher;
 
 class PlaceController extends Controller
 {
 
 
     /**
+     * @QueryParam(name="offset", requirements="\d+", default="")
+     * @QueryParam(name="limit", requirements="\d+", default="")
+     * @QueryParam(name="sort", requirements="asc|desc", nullable=true)
      * @Rest\View(serializerGroups={"place"})
      * @Rest\Get("/places")
      * @param Request $request
      */
-    public function getPlacesAction(Request $request)
+    public function getPlacesAction(Request $request, ParamFetcher $paramFetcher)
     {
+        $offset = $paramFetcher->get('offset');
+        $limit = $paramFetcher->get('limit');
+        $sort = $paramFetcher->get('sort');
 
-        $places = $this->getDoctrine()->getRepository(Place::class)->findAll();
+        $qb = $this->get('doctrine.orm.entity_manager')->createQueryBuilder();
+        $qb->select('p')->from('AppBundle:Place', 'p');
+
+        if($offset != ""){
+            $qb->setFirstResult($offset);
+        }
+
+        if($limit != ""){
+            $qb->setMaxResults($limit);
+        }
+        if($sort != ""){
+            $qb->orderBy('p.name', $sort);
+        }
+
+        $places = $qb->getQuery()->getResult();
 
         return $places;
     }
