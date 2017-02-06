@@ -7,6 +7,7 @@ imports:
 # http://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: en
+    jms_serializer.camel_case_naming_strategy.class: JMS\Serializer\Naming\IdenticalPropertyNamingStrategy
 
 framework:
     #esi:             ~
@@ -18,7 +19,7 @@ framework:
     form:            ~
     csrf_protection: ~
     validation:      { enable_annotations: true }
-    serializer:      { enable_annotations: true }
+    serializer:      { enable_annotations: true , enabled: false}
     templating:
         engines: ['twig']
     default_locale:  "%locale%"
@@ -89,3 +90,11 @@ fos_rest:
             'Symfony\Component\Security\Core\Exception\BadCredentialsException' : 401
     param_fetcher_listener:
         enabled: true
+    serializer:
+        serialize_null: true
+
+jms_serializer:
+    handlers:
+        datetime:
+            default_format: "Y-m-d\\TH:i:sP"
+            default_timezone: "UTC"
