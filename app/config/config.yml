@@ -98,3 +98,12 @@ jms_serializer:
         datetime:
             default_format: "Y-m-d\\TH:i:sP"
             default_timezone: "UTC"
+
+nelmio_api_doc:
+    swagger:
+        api_base_path: /app_dev.php
+        swagger_version: '2.0'
+        api_version: '1.0'
+        info:
+            title: 'REST API DOC'
+            description: 'Proposition des sorties selon nos préférences'

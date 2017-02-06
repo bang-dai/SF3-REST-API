@@ -23,12 +23,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use FOS\RestBundle\Controller\Annotations\QueryParam;
 use FOS\RestBundle\Request\ParamFetcher;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 
 class PlaceController extends Controller
 {
 
 
     /**
+     *
+     * @ApiDoc(
+     *     description="Get list of places",
+     *     output={ "class"=Place::class, "collection"=true, "groups"={"place"} }
+     * )
+     *
+     *
+     *
      * @QueryParam(name="offset", requirements="\d+", default="")
      * @QueryParam(name="limit", requirements="\d+", default="")
      * @QueryParam(name="sort", requirements="asc|desc", nullable=true)
@@ -83,6 +92,21 @@ class PlaceController extends Controller
     }
 
     /**
+     * @ApiDoc(
+     *     resource=true,
+     *     description="Create a new place",
+     *     input={ "class"=PlaceType::class, "name"="" },
+     *     statusCodes={
+     *          201 = "Place created with success",
+     *          400 = "Errors in the form"
+     *     },
+     *     responseMap={
+     *          201 = {"class"=Place::class, "groups"={"place"}},
+     *          400 = {"class"=PlaceType::class, "form_errors"=true, "name"="" }
+     *     }
+     * )
+     *
+     *
      * @Rest\View(statusCode=Response::HTTP_CREATED, serializerGroups={"place"})
      * @Rest\Post("/places")
      * @param Request $request
