@@ -1,4 +1,14 @@
-rest_api
+A boilerplate project with SF3 Rest API
 ========
 
-A Symfony project created on January 21, 2017, 7:22 pm.
+Symfony 3
+---------
+A Popular PHP framework
+
+JMS Serializer
+--------------
+Serialize object to json with group strategy
+
+NelmioApiDocBundle
+-----------------
+Auto generate API Doc
